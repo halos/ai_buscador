@@ -1,16 +1,10 @@
+#include "ai_buscador.h"
+#include "PorterStemmer.h"
 
 
 
-
-ai_buscador_stopper
-ai_buscador_stemmer
 ai_buscador_similitud
 ai_buscador_escribeResultado
-
-char* ai_buscador_stopper(char* stoplist_path, vdin_str text);
-
-
-
 
 
 /**
@@ -45,7 +39,7 @@ vdin_str ai_buscador_normaliza(vdin_str palabras){
  * @param text Cadena de caracteres de donde eliminar las las palabres vacías
  * @return Cadena de caracteres sin las palabras vacias
  */
-vdin_str ai_indice_stopper(char* stoplist_path, vdin_str palabras){
+vdin_str ai_buscador_stopper(char* stoplist_path, vdin_str palabras){
 
     static vdin_str stopwords = 0;
     vdin_str stopped;
