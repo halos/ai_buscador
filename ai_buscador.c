@@ -95,3 +95,14 @@ vdin_str ai_indice_stopper(char* stoplist_path, vdin_str palabras){
     return stopped;
 
 }
+
+/**
+ * @brief Extrae la raiz de las palabras
+ * @param palabras Vector de palabras a stemmizar
+ * @return Cadena de caracteres con la raiz de las palabras
+ */
+vdin_str ai_buscador_stemmer(vdin_str palabras){
+
+	return stemstring(vdin_str strings);
+	
+}
