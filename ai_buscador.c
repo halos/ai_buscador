@@ -1,4 +1,9 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "ai_buscador.h"
+#include "ai_indice.h"
 #include "PorterStemmer.h"
 
 /**
@@ -17,7 +22,7 @@ vdin_str ai_buscador_normaliza(vdin_str palabras){
 	norm_words = vdin_str_crea();
 
 	for(i = 0; i < num_words; i++){
-		norm_word = normaliza_str(vdin_str_obtiene(doc.titulo, i));
+		norm_word = normaliza_str(vdin_str_obtiene(palabras, i));
 		if(strlen(norm_word))
 			vdin_str_aumd(norm_words, norm_word);
 
@@ -91,7 +96,7 @@ vdin_str ai_buscador_stopper(char* stoplist_path, vdin_str palabras){
  */
 vdin_str ai_buscador_stemmer(vdin_str palabras){
 
-	return stemstring(vdin_str strings);
+	return stemstring(palabras);
 	
 }
 
