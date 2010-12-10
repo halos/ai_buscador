@@ -14,7 +14,7 @@
 vdin_str ai_buscador_normaliza(vdin_str palabras){
 	
     int i;
-    int tam, num_words;
+    int num_words;
     char* norm_word;
     vdin_str norm_words;
 
