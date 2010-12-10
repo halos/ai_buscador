@@ -1,12 +1,6 @@
 #include "ai_buscador.h"
 #include "PorterStemmer.h"
 
-
-
-ai_buscador_similitud
-ai_buscador_escribeResultado
-
-
 /**
  * @brief Normaliza el texto de los documentos indicados
  * @param originales Documentos que se normalizaran
@@ -100,3 +94,11 @@ vdin_str ai_buscador_stemmer(vdin_str palabras){
 	return stemstring(vdin_str strings);
 	
 }
+
+/*
+ai_buscador_similitud
+*/
+
+/*
+ai_buscador_escribeResultado
+*/
