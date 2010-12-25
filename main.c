@@ -25,7 +25,7 @@ int main(int argc,char** argv)
 
     // stopper
     vs_free = consulta;
-    consulta = ai_buscador_stopper(consulta);
+    consulta = ai_buscador_stopper(stoplist ,consulta);
     vdin_str_destruye(&vs_free);
 
     // normaliza
