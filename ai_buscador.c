@@ -5,6 +5,10 @@
 #include "ai_buscador.h"
 #include "ai_indice.h"
 #include "PorterStemmer.h"
+#include "estructuras.h"
+
+#include "eedd/avl_words.h"
+#include "eedd/listadin_freqs.h"
 
 /**
  * @brief Normaliza el texto de los documentos indicados
@@ -62,7 +66,7 @@ vdin_str ai_buscador_stopper(char* stoplist_path, vdin_str palabras){
         fread(stw_buff, 1, tam, stw_file);
         stw_buff[tam - 1] = 0;
 
-        stopwords = split_text(stw_buff);
+        stopwords = split_text(stw_buff, " ,;.:\r\n\t");
 
         free(stw_buff);
         fclose(stw_file);
@@ -100,9 +104,74 @@ vdin_str ai_buscador_stemmer(vdin_str palabras){
 	
 }
 
+int compar_word(const word *a, const word *b){
+
+    return strcmp(a->palabra, b->palabra);
+
+}
+
 /*
 ai_buscador_similitud
 */
+
+ai_buscador_similitud(){
+
+    FILE* fd;
+    int file_size, tam, tam2, i, j;
+    int file_id, num_rep;
+    char *buff, *palabra;
+    vdin_str lineas, linea;
+    avl_words words;
+    freq_file *new_ff;
+    word *new_w;
+
+    // Cargar fichero
+    fd = fopen("index.ind", "r");
+
+    fseek(fd, 0, SEEK_END);
+    file_size = ftell(fd);
+    buff = malloc(file_size);
+    words = avl_words_crea();
+
+    fclose(fd);
+    
+    // Parsear buffer
+    lineas = split_text(buff, "\r\n");
+
+    tam = vdin_str_tama(lineas);
+
+    for(i = 0; i < tam; i++){
+
+        linea = split_text(vdin_str_obtiene(lineas, i), " ");
+
+        tam2 = vdin_str_tama(linea);
+        palabra = vdin_str_obtiene(linea, 0);
+        //crear palabra en eedd
+        new_w = malloc(sizeof(word));
+        new_w->palabra = strdup(palabra);
+        new_w->frecuencias = listadin_freqs_crea();
+
+        for(j = 1; j < tam2; j++){
+
+            sscanf(vdin_str_obtiene(linea, i), "%d:%d", &file_id, &num_rep);
+            // añadir file_id : num_rep
+            new_ff = malloc(sizeof(freq_file));
+            new_ff->file = file_id;
+            new_ff->freq = num_rep;
+            listadin_freqs_insertaFinal(new_w->frecuencias, new_ff);
+
+            avl_words_mete(&words, *new_w, compar_word);
+
+        }
+
+
+    }
+
+    
+
+
+
+}
 
 /*
 ai_buscador_escribeResultado

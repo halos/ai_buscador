@@ -2,8 +2,8 @@
 
 # Ficheros objeto que deben se generados para el proyecto
 #OBJS2= listadin_freqs.o vdin_str.o vdin_documentos.o vdin_freqs.o avl_words.o depuracion.o ai_indice.o main.o PorterStemmer.o
-OBJS= eedd/vdin_str.o depuracion.o ai_indice.o ai_buscador.o main.o PorterStemmer.o
-EEDDS= vdin_str.o
+OBJS= eedd/vdin_str.o eedd/avl_words.o eedd/listadin_freqs.o depuracion.o ai_indice.o ai_buscador.o main.o PorterStemmer.o
+EEDDS= vdin_str.o avl_words.o listadin_freqs.o
 
 # Nombre del programa ejecutable a generar cuando se enlacen los ficheros objeto
 EJECUTABLE=ai_buscador.out
