@@ -15,7 +15,7 @@ vdin_str ls_files(const char* ruta);
 
 vdin_str ai_indice_stopper(char* stoplist_path, vdin_str text);
 
-vdin_str split_text(const char* str);
+vdin_str split_text(const char* str, const char* elim);
 
 char* normaliza_str(char* word);
 

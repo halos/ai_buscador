@@ -21,12 +21,12 @@
  * @return vdin_str con las palabras separadas
  * @post Las palabras devueltas tienen su memoria reservada
  */
-vdin_str split_text(const char* str){
+vdin_str split_text(const char* str, const char* elim){
 
     char *ptr;
     char *word;
     char *copia_str;
-    char elim[] = " ,;.:\r\n\t";
+    //char elim[] = " ,;.:\r\n\t";
     vdin_str separadas;
 
     separadas = vdin_str_crea();
@@ -153,7 +153,7 @@ vdin_str ai_indice_stopper(char* stoplist_path, vdin_str palabras){
         fread(stw_buff, 1, tam, stw_file);
         stw_buff[tam - 1] = 0;
 
-        stopwords = split_text(stw_buff);
+        stopwords = split_text(stw_buff, " ,;.:\r\n\t");
 
         free(stw_buff);
         fclose(stw_file);
