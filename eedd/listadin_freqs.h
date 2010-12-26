@@ -17,24 +17,24 @@
 /**
  * @brief TDA lista dinamica
  * @par Descripcion
- *   Definir variables del tipo tlistadin_freqs para trabajar con listas dinamicas
+ *   Definir variables del tipo tlistadin_idfs para trabajar con listas dinamicas
 */
 
-typedef struct tlistadin_freqs_rep *listadin_idf;
+typedef struct tlistadin_idf_rep *listadin_idf;
 
 	listadin_idf listadin_idf_crea();
 	void listadin_idf_destruye(listadin_idf *l);
 	int listadin_idf_numElem(listadin_idf l);
-	void listadin_idf_insertaPos(listadin_idf l, freq_file *elem, int pos);
-	void listadin_idf_insertaInicio(listadin_idf l, freq_file *elem);
-	void listadin_idf_insertaFinal(listadin_idf l, freq_file *elem);
-	void listadin_idf_inserta(listadin_idf l, freq_file *elem);
-	void listadin_idf_sacaPos(listadin_idf l, freq_file **elem, int pos);
-	void listadin_idf_obtienePos(listadin_idf l, freq_file **elem, int pos);
-	int listadin_idf_busca(listadin_idf l, freq_file **elem, int (*fcomp)(const freq_file **elem1, const freq_file **elem2));
+	void listadin_idf_insertaPos(listadin_idf l, idf_file *elem, int pos);
+	void listadin_idf_insertaInicio(listadin_idf l, idf_file *elem);
+	void listadin_idf_insertaFinal(listadin_idf l, idf_file *elem);
+	void listadin_idf_inserta(listadin_idf l, idf_file *elem);
+	void listadin_idf_sacaPos(listadin_idf l, idf_file **elem, int pos);
+	void listadin_idf_obtienePos(listadin_idf l, idf_file **elem, int pos);
+	int listadin_idf_busca(listadin_idf l, idf_file **elem, int (*fcomp)(const idf_file **elem1, const idf_file **elem2));
 
 	void listadin_idf_iter_ini (listadin_idf l);
-	freq_file** listadin_idf_iter_siguiente (listadin_idf l);
+	idf_file** listadin_idf_iter_siguiente (listadin_idf l);
 	int listadin_idf_iter_fin(listadin_idf l);
 
 #endif

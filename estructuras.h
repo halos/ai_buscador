@@ -26,7 +26,7 @@ typedef struct rep_document document;
 
 struct rep_word{
     char *palabra;
-    idf_file idfs;
+    listadin_idf idfs;
 };
 
 typedef struct rep_word word;

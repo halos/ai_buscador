@@ -31,7 +31,7 @@ struct tlistadin_idf_rep {
 */
 
 struct tlistadin_idf_nodo {
-  freq_file *dato; /** almacena un dato */
+  idf_file *dato; /** almacena un dato */
   struct tlistadin_idf_nodo *sig;  /** direcci�n del siguiente elemento de la lista */
 };
 
@@ -101,7 +101,7 @@ int listadin_idf_numElem(listadin_idf l) {
 */
 
 
-void listadin_idf_insertaPos(listadin_idf l, freq_file *elem, int pos) {
+void listadin_idf_insertaPos(listadin_idf l, idf_file *elem, int pos) {
 
 	tnodo_freqs nuevo, act,ant;
 
@@ -153,7 +153,7 @@ void listadin_idf_insertaPos(listadin_idf l, freq_file *elem, int pos) {
  * @pre memoria suficiente para crear el nuevo nodo
  * @post creamos el nuevo nodo e insertamos en la posici�n inicial
 */
-void listadin_idf_insertaInicio(listadin_idf l, freq_file *elem) {
+void listadin_idf_insertaInicio(listadin_idf l, idf_file *elem) {
   tnodo_freqs nuevo, act;
 
 #ifdef _LISTADIN_idf_DEBUG
@@ -188,7 +188,7 @@ void listadin_idf_insertaInicio(listadin_idf l, freq_file *elem) {
  * @pre memoria suficiente para crear el nuevo nodo
  * @post creamos el nuevo nodo e insertamos en la �ltima posici�n
 */
-void listadin_idf_insertaFinal(listadin_idf l, freq_file *elem) {
+void listadin_idf_insertaFinal(listadin_idf l, idf_file *elem) {
   tnodo_freqs nuevo, act;
 
 #ifdef _LISTADIN_idf_DEBUG
@@ -223,7 +223,7 @@ void listadin_idf_insertaFinal(listadin_idf l, freq_file *elem) {
  * @pre memoria suficiente para crear el nuevo nodo
  * @post creamos el nuevo nodo e insertamos en la posici�n predefinida
 */
-void listadin_idf_inserta(listadin_idf l, freq_file *elem) {
+void listadin_idf_inserta(listadin_idf l, idf_file *elem) {
   // Inserto al final
   listadin_idf_insertaFinal(l, elem);
 }
@@ -238,7 +238,7 @@ void listadin_idf_inserta(listadin_idf l, freq_file *elem) {
  * @pre la lista no este vacia
  * @post sacamos el valor indicado y liberamos la memoria de ese nodo de la lista
 */
-void listadin_idf_sacaPos(listadin_idf l, freq_file **elem, int pos) {
+void listadin_idf_sacaPos(listadin_idf l, idf_file **elem, int pos) {
   tnodo_freqs viejo, act, ant;
   int i;
 
@@ -290,7 +290,7 @@ void listadin_idf_sacaPos(listadin_idf l, freq_file **elem, int pos) {
  * @pre la lista no este vacia
  * @post sacamos el valor indicado sin borrarlo de la lista
 */
-void listadin_idf_obtienePos(listadin_idf l, freq_file **elem, int pos) {
+void listadin_idf_obtienePos(listadin_idf l, idf_file **elem, int pos) {
   tnodo_freqs act, ant;
   int i;
 
@@ -327,7 +327,7 @@ void listadin_idf_obtienePos(listadin_idf l, freq_file **elem, int pos) {
  * @post recorreremos la lista en busca del dato en cuestion
  * @return un entero con la posicion del dato en la lista, -1 si no existe, y en elem el propio dato copiado
 */
-int listadin_idf_busca(listadin_idf l, freq_file **elem, int (*fcomp)(const freq_file **elem1, const freq_file **elem2)) {
+int listadin_idf_busca(listadin_idf l, idf_file **elem, int (*fcomp)(const idf_file **elem1, const idf_file **elem2)) {
   tnodo_freqs act, ant;
   int i;
 
@@ -340,7 +340,7 @@ int listadin_idf_busca(listadin_idf l, freq_file **elem, int (*fcomp)(const freq
   ant=NULL;
   act=l->inicio;
   i=0;
-  while (act && fcomp((const freq_file**)elem,(const freq_file**)&act->dato)!=0) {
+  while (act && fcomp((const idf_file**)elem,(const idf_file**)&act->dato)!=0) {
     ant=act;
     act=act->sig;
     i++;
@@ -366,7 +366,7 @@ void listadin_idf_iter_ini (listadin_idf l) {
 /**@brief Devuelve la direcci�n de memoria del siguiente dato en la lista*/
 
 
-freq_file** listadin_idf_iter_siguiente (listadin_idf l) {
+idf_file** listadin_idf_iter_siguiente (listadin_idf l) {
 
 	tnodo_freqs act;
 
