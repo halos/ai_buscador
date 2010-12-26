@@ -38,6 +38,13 @@ int main(int argc,char** argv)
     // busca similitud
     s = ai_buscador_similitud(consulta);
 
+    int i, tam;
+
+    tam = get_num_docs();
+
+    for(i = 0; i < tam; i++)
+        printf("%d --> %f\n",i, s[i]);
+
     return 0;
 
 }

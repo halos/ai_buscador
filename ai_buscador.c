@@ -138,8 +138,10 @@ avl_words gen_eedd(const char* file_path){
 
     fseek(fd, 0, SEEK_END);
     file_size = ftell(fd);
+    fseek(fd, 0, SEEK_SET);
     buff = malloc(file_size);
     words = avl_words_crea();
+    fread(buff, file_size, 1, fd);
 
     fclose(fd);
 
@@ -163,7 +165,7 @@ avl_words gen_eedd(const char* file_path){
 
         for(j = 1; j < tam2; j++){
 
-            sscanf(vdin_str_obtiene(linea, i), "%d:%f", &file_id, &peso);
+            sscanf(vdin_str_obtiene(linea, j), "%d:%f", &file_id, &peso);
             // añadir file_id : peso
             new_ff = malloc(sizeof(listadin_idf));
             new_ff->file = file_id;
@@ -174,6 +176,35 @@ avl_words gen_eedd(const char* file_path){
     }
 
     return words;
+
+}
+
+/**
+ * @brief Obtiene el número de documentos de la colección
+ * @return Número de documenos de la colección
+ */
+int get_num_docs(){
+
+    int file_size, num_docs;
+    char *buff;
+    FILE *fd;
+    vdin_str indices;
+
+    fd = fopen("ids.dat", "r");
+    fseek(fd, 0, SEEK_END);
+    file_size = ftell(fd);
+    fseek(fd, 0, SEEK_SET);
+    buff = malloc(file_size);
+    fread(buff, file_size, 1, fd);
+    fclose(fd);
+    
+    indices = split_text(buff, "\r\n");
+
+    num_docs = vdin_str_tama(indices);
+
+    vdin_str_destruye(&indices);
+
+    return num_docs;
 
 }
 
@@ -191,35 +222,28 @@ int compar_idf_files(const idf_file **a, const idf_file **b){
 float* ai_buscador_similitud(vdin_str consulta){
 
     int i, tam, j, tam2;
+    int file_size;
     avl_words words;
     word palabra;
     vdin_str indices;
     idf_file *idff, *idff_aux;
     float *s; // Similitudes
     float w, idfc, tfc;
-    char* buff;
     FILE* fd;
-
 
     // Carga el índice de palabras
     words = gen_eedd("index.ind");
 
     // Calcula similitudes
 
-    fd = fopen("index.ind", "r");
-    fseek(fd, 0, SEEK_END);
-    buff = malloc(ftell(fd));
-    fclose(fd);
-    indices = split_text(buff, "\r\n");
-
-    tam = vdin_str_tama(indices);
+    tam = get_num_docs();
     s = calloc(tam, sizeof(float));
 
-    free(buff);
-    vdin_str_destruye(&indices);
+    //free(buff);
+    
 
     tam2 = vdin_str_tama(consulta);
-    idff = malloc(sizeof(listadin_idf));
+    idff = malloc(sizeof(idf_file));
     idff_aux = idff;
 
     for(i = 0; i < tam; i++){ // Docs
