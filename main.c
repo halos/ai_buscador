@@ -3,11 +3,13 @@
 
 #include "eedd/vdin_str.h"
 #include "ai_buscador.h"
+#include "ai_indice.h"
 
 int main(int argc,char** argv)
 {
 
     char *stoplist;
+    float *s;
 
     char query[] = "dell laptop functions";
     vdin_str consulta, vs_free;
@@ -15,8 +17,8 @@ int main(int argc,char** argv)
     //stoplist = argv[2];
     stoplist = strdup("englishST.txt");
 
-    consulta = split_text(query);
-
+    consulta = split_text(query, " ");
+    
     // TODO: Liberar las cadenas
     // stemmer
     vs_free = consulta;
@@ -32,6 +34,9 @@ int main(int argc,char** argv)
     vs_free = consulta;
     consulta = ai_buscador_normaliza(consulta);
     vdin_str_destruye(&vs_free);
+
+    // busca similitud
+    s = ai_buscador_similitud(consulta);
 
     return 0;
 

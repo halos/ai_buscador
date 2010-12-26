@@ -130,7 +130,7 @@ avl_words gen_eedd(const char* file_path){
     char *buff, *palabra;
     vdin_str lineas, linea;
     avl_words words;
-    peso_file *new_ff;
+    idf_file *new_ff;
     word *new_w;
 
     // Cargar fichero
@@ -158,17 +158,17 @@ avl_words gen_eedd(const char* file_path){
         //crear palabra en eedd
         new_w = malloc(sizeof(word));
         new_w->palabra = strdup(palabra);
-        new_w->pesos = listadin_pesos_crea();
-        avl_words_mete(words, new_w, compar_word);
+        new_w->idfs = listadin_idf_crea();
+        avl_words_mete(&words, *new_w, compar_word);
 
         for(j = 1; j < tam2; j++){
 
             sscanf(vdin_str_obtiene(linea, i), "%d:%f", &file_id, &peso);
             // añadir file_id : peso
-            new_ff = malloc(sizeof(peso_file));
+            new_ff = malloc(sizeof(listadin_idf));
             new_ff->file = file_id;
-            new_ff->peso = peso;
-            listadin_pesos_insertaFinal(new_w->pesos, new_ff);
+            new_ff->idf = peso;
+            listadin_idf_insertaFinal(new_w->idfs, new_ff);
 
         }
     }
@@ -177,7 +177,7 @@ avl_words gen_eedd(const char* file_path){
 
 }
 
-int compar_freqs(const peso_file **a, const peso_file **b){
+int compar_idf_files(const idf_file **a, const idf_file **b){
 
     return (*a)->file - (*b)->file;
 
@@ -194,7 +194,7 @@ float* ai_buscador_similitud(vdin_str consulta){
     avl_words words;
     word palabra;
     vdin_str indices;
-    peso_file *ff;
+    idf_file *idff, *idff_aux;
     float *s; // Similitudes
     float w, idfc, tfc;
     char* buff;
@@ -216,10 +216,11 @@ float* ai_buscador_similitud(vdin_str consulta){
     s = calloc(tam, sizeof(float));
 
     free(buff);
-    vdin_str_destruye(indices);
+    vdin_str_destruye(&indices);
 
     tam2 = vdin_str_tama(consulta);
-    ff = malloc(sizeof(peso_file));
+    idff = malloc(sizeof(listadin_idf));
+    idff_aux = idff;
 
     for(i = 0; i < tam; i++){ // Docs
 
@@ -230,26 +231,31 @@ float* ai_buscador_similitud(vdin_str consulta){
             palabra.palabra = vdin_str_obtiene(consulta, j);
 
             // comprobar si la palabra está en el árbol
-            if(avl_words_busca(palabra, compar_word){
-            //coger la palabra!!!!!!
+            if(avl_words_busca(words, &palabra, compar_word)){
 
-                ff->file = i;
+                idff->file = i;
 
                 //comprobar si el documento está en la lista
-                if(listadin_pesos_busca(palabra.pesos, &ff, compar_freqs())){
+                if(listadin_idf_busca(palabra.idfs, &idff, compar_idf_files)){
                     //coger lista!!!!!!
-                    tfc = ff->peso;
+                    tfc = idff->idf;
                     w = tfc * idfc; // Tfc * Idfc
 
                     s[i] += w;
 
                 }
 
+                idff = idff_aux;
+
             }
 
         }
 
     }
+
+    free(idff_aux);
+
+    return s;
 
 }
 
