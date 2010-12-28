@@ -283,6 +283,35 @@ float* ai_buscador_similitud(vdin_str consulta){
 
 }
 
-/*
-ai_buscador_escribeResultado
-*/
+/**
+ * @brief
+ * @param s Vector de similitudes
+ * @param relevantes Cantidad de elementos relevantes
+ */
+void ai_buscador_escribeResultado(float *s, int relevantes){
+
+    int i, tam, j;
+    int *docs;
+    float *s2; // vector de similitudes sin los ceros
+
+    // Eliminación de elementos con similitud 0
+    tam = get_num_docs();
+    docs = calloc(tam, sizeof(int));
+    s2 = calloc(tam, sizeof(float));
+
+    j = 0;
+
+    for(i = 0; i < tam; i++)
+        if(s[i]){
+
+            s2[j] = s[i];
+            docs[j] = i;
+            j++;
+
+        }
+
+    s2 = realloc(s2, j * sizeof(float));
+    docs = realloc(docs, j * sizeof(int));
+
+}
+
