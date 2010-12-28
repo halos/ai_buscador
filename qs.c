@@ -22,7 +22,7 @@ int pivotar (float *v, int *d, int izq, int der)
     indiceAlmacenamiento = izq;
  
     for (indiceLectura = izq; indiceLectura < der; indiceLectura++){
-        if (v[indiceLectura] <= valorPivote){
+        if (v[indiceLectura] >= valorPivote){
            swap (v, d, indiceLectura, indiceAlmacenamiento);
             indiceAlmacenamiento++;
         }
