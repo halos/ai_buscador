@@ -6,6 +6,7 @@
 #include "ai_indice.h"
 #include "PorterStemmer.h"
 #include "estructuras.h"
+#include "qs.h"
 
 #include "eedd/avl_words.h"
 #include "eedd/listadin_freqs.h"
@@ -302,7 +303,7 @@ void ai_buscador_escribeResultado(float *s, int relevantes){
     j = 0;
 
     for(i = 0; i < tam; i++)
-        if(s[i]){
+        if(s[i] > 0){
 
             s2[j] = s[i];
             docs[j] = i;
@@ -310,8 +311,22 @@ void ai_buscador_escribeResultado(float *s, int relevantes){
 
         }
 
-    s2 = realloc(s2, j * sizeof(float));
-    docs = realloc(docs, j * sizeof(int));
+    tam = j;
+
+    s2 = realloc(s2, tam * sizeof(float));
+    docs = realloc(docs, tam * sizeof(int));
+
+    // ordena
+    quicksort(s2, docs, 0, tam - 1);
+
+    //realloc si procede
+    if(tam > relevantes){
+        s2 = realloc(s2, relevantes * sizeof(float));
+        docs = realloc(docs, relevantes * sizeof(int));
+
+    }
+
+    // Escribe resultados
 
 }
 

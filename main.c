@@ -42,8 +42,12 @@ int main(int argc,char** argv)
 
     tam = get_num_docs();
 
+    printf("Resultados:\n");
+
     for(i = 0; i < tam; i++)
         printf("%d --> %f\n",i, s[i]);
+
+    ai_buscador_escribeResultado(s, 5);
 
     return 0;
 

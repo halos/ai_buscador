@@ -1,40 +1,44 @@
 
-void swap(int *v, int i, int j){
+void swap(float *v, int *d, int i, int j){
 
-	int aux = v[i];
+	float aux_f = v[i];
 	v[i] = v[j];
-	v[j] = aux;
+	v[j] = aux_f;
+
+        int aux_i = d[i];
+	d[i] = d[j];
+	d[j] = aux_i;
 
 }
 
-int pivotar (int *v, int izq, int der)
+int pivotar (float *v, int *d, int izq, int der)
 { 
     int posicionPivote = (izq + der) / 2;
-    int valorPivote = v[posicionPivote];
+    float valorPivote = v[posicionPivote];
     int indiceAlmacenamiento;
     int indiceLectura;
     
-    swap (v, posicionPivote, der);//Se situal pivote al final del vector
+    swap (v, d, posicionPivote, der);//Se situal pivote al final del vector
     indiceAlmacenamiento = izq;
  
     for (indiceLectura = izq; indiceLectura < der; indiceLectura++){
         if (v[indiceLectura] <= valorPivote){
-           swap (v, indiceLectura, indiceAlmacenamiento);
+           swap (v, d, indiceLectura, indiceAlmacenamiento);
             indiceAlmacenamiento++;
         }
     }
  
-    swap (v, indiceAlmacenamiento, der); //Se coloca el pivote en su lugar.
+    swap (v, d, indiceAlmacenamiento, der); //Se coloca el pivote en su lugar.
  
     return indiceAlmacenamiento;
 }
  
-void quicksort (int *v, int izq, int der)
+void quicksort (float *v, int *d, int izq, int der)
 {
     int pivote;
      if(izq < der){
-        pivote = pivotar (v, izq, der); //Esta operación coloca el pivote en su lugar.
-        quicksort(v, izq, pivote-1);
-        quicksort(v, pivote+1, der);
+        pivote = pivotar (v, d, izq, der); //Esta operación coloca el pivote en su lugar.
+        quicksort(v, d, izq, pivote-1);
+        quicksort(v, d, pivote+1, der);
     } 
 }
