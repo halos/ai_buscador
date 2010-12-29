@@ -333,12 +333,32 @@ char* get_tag_text(char* buff, char* _tag){
 
 }
 
+/**
+ * @brief Obtiene el nombre del fichero indicado
+ * @param index Índice del fichero
+ * @return Nombre del fichero
+ */
 char* get_nombre_fichero(int index){
 
     FILE *fd;
     fd = fopen("ids.dat", "r");
+    int encontrado = 0;
+    char *file_name;
+    int id_f;
+
+    do{
+
+        fscanf(fd, "%s:%d\n", file_name), &id_f;
+        if(id_f == index)
+            encontrado = 1;
+        else
+            free(file_name);
+
+    }while(!encontrado);
 
     fclose(fd);
+
+    return file_name;
 
 }
 
