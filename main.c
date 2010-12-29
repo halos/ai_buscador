@@ -47,7 +47,7 @@ int main(int argc,char** argv)
     for(i = 0; i < tam; i++)
         printf("%d --> %f\n",i, s[i]);
 
-    ai_buscador_escribeResultado(s, 5);
+    ai_buscador_escribeResultado(s, 5, query);
 
     return 0;
 

@@ -289,7 +289,7 @@ float* ai_buscador_similitud(vdin_str consulta){
  * @param s Vector de similitudes
  * @param relevantes Cantidad de elementos relevantes
  */
-void ai_buscador_escribeResultado(float *s, int relevantes){
+void ai_buscador_escribeResultado(float *s, int relevantes, char *c){
 
     int i, tam, j;
     int *docs;
@@ -327,6 +327,28 @@ void ai_buscador_escribeResultado(float *s, int relevantes){
     }
 
     // Escribe resultados
+    write_results(docs, s, tam, c);
 
 }
 
+void write_results(int *docs, float *s, int tam, char *c){
+
+    int i, tam;
+    char *file_name, titulo, frase;
+    FILE *fd;
+    fopen("results.dat", "a");
+
+    fprintf(fd, "\"%s\"\n", c);
+
+    for(i = 0; i < tam; i++){
+        // get nombre fichero
+        // get titulo
+        // get frase
+        fprintf(fd, "%d- %s:%f:%s:%s\n",i+1 ,file_name, s[i], titulo, frase);
+    }
+
+    fprintf(fd, "\n");
+
+    fclose(fd);
+
+}
