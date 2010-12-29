@@ -285,7 +285,134 @@ float* ai_buscador_similitud(vdin_str consulta){
 }
 
 /**
- * @brief
+ * @brief Obtiene el texto encerrado dentro del tag
+ * @param buff Texto de donde obtener los datos
+ * @param tag Tag dinde se encuentra el texto
+ * @return Texto que se encuentra dentro del tag o  NULL si no pudo obtenerse
+ */
+char* get_tag_text(char* buff, char* _tag){
+
+    char *ptr_inic, *ptr_fin;
+    char *txt = 0;
+    char *open_tag, *close_tag;
+
+    open_tag = malloc(strlen(_tag) + 2 + 1); // < > \0
+    close_tag = malloc(strlen(_tag) + 3 + 1); // </ > \0
+
+    *open_tag = 0;
+    *close_tag = 0;
+
+    strcat(open_tag, "<");
+    strcat(open_tag, _tag);
+    strcat(open_tag, ">");
+
+    strcat(close_tag, "</");
+    strcat(close_tag, _tag);
+    strcat(close_tag, ">");
+
+    // Busca los tags
+    ptr_inic = strstr(buff,open_tag);
+    ptr_fin = strstr(buff,close_tag);
+
+    if(ptr_inic && ptr_fin){ // Si están los dos
+
+        ptr_inic += strlen(open_tag);
+
+        txt = malloc(ptr_fin - ptr_inic + 1);
+
+        strncpy(txt, ptr_inic, ptr_fin - ptr_inic);
+
+        txt[ptr_fin - ptr_inic] = 0;
+
+    }
+
+    free(open_tag);
+    free(close_tag);
+
+    return txt;
+
+}
+
+char* get_nombre_fichero(int index){
+
+    FILE *fd;
+    fd = fopen("ids.dat", "r");
+
+    fclose(fd);
+
+}
+
+/**
+ * @brief Obtiene el título del fichero con el identificador indicado
+ * @param index Identificador del fichero
+ * @return título del documento
+ */
+char* get_titulo(int index){
+
+    FILE *fd;
+    char *file_name, *titulo, *buffer;
+    int tam;
+
+    file_name = get_nombre_fichero(index);
+
+    fd = fopen(file_name, "r");
+    fseek(fd, 0, SEEK_END);
+    tam = ftell(fd);
+    fseek(fd, 0, SEEK_SET);
+
+    //busca titulo
+    fread(buffer, 1, tam, fd);
+    
+    fclose(fd);
+    
+    titulo = get_tag_text(buffer, "TITLE");
+
+    return titulo;
+
+}
+
+char* get_frase(int i, char* c){
+
+    FILE *fd;
+    fd = fopen("ids.dat", "r");
+
+    fclose(fd);
+
+}
+
+/**
+ * @brief Vuelca los resultados en el fichero
+ * @param docs Vector con los documentos
+ * @param s Vector de similitudes
+ * @param tam número de resultados
+ * @param c Consulta
+ */
+void write_results(int *docs, float *s, int tam, char *c){
+
+    int i;
+    char *file_name, *titulo, *frase;
+    FILE *fd;
+    fd = fopen("results.dat", "a");
+
+    fprintf(fd, "\"%s\"\n", c);
+
+    for(i = 0; i < tam; i++){
+
+        file_name = get_nombre_fichero(i);
+        titulo = get_titulo(i);
+        frase = get_frase(i, c);
+
+        fprintf(fd, "%d- %s:%f:%s:%s\n",i+1 ,file_name, s[i], titulo, frase);
+    }
+
+    fprintf(fd, "\n");
+
+    fclose(fd);
+
+}
+
+/**
+ * @brief Parsea y escribe los resultados en el fichero
  * @param s Vector de similitudes
  * @param relevantes Cantidad de elementos relevantes
  */
@@ -331,24 +458,3 @@ void ai_buscador_escribeResultado(float *s, int relevantes, char *c){
 
 }
 
-void write_results(int *docs, float *s, int tam, char *c){
-
-    int i, tam;
-    char *file_name, titulo, frase;
-    FILE *fd;
-    fopen("results.dat", "a");
-
-    fprintf(fd, "\"%s\"\n", c);
-
-    for(i = 0; i < tam; i++){
-        // get nombre fichero
-        // get titulo
-        // get frase
-        fprintf(fd, "%d- %s:%f:%s:%s\n",i+1 ,file_name, s[i], titulo, frase);
-    }
-
-    fprintf(fd, "\n");
-
-    fclose(fd);
-
-}
