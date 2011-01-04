@@ -346,14 +346,14 @@ char* get_nombre_fichero(int index){
     char *file_name;
     int id_f;
 
+    file_name = malloc(64);
+
     do{
 
-        fscanf(fd, "%s:%d\n", file_name), &id_f;
+        fscanf(fd, "%[^|]|%d\n", file_name, &id_f);
         if(id_f == index)
             encontrado = 1;
-        else
-            free(file_name);
-
+        
     }while(!encontrado);
 
     fclose(fd);
@@ -391,12 +391,50 @@ char* get_titulo(int index){
 
 }
 
-char* get_frase(int i, char* c){
+/**
+ * @brief Obtiene una frase con una palabra de la consulta
+ * @param i Índice del archivo donde buscar
+ * @param c Consulta
+ * @return Frase con una palabra d ela consulta
+ */
+char* get_frase(int ind, char* c){
 
     FILE *fd;
-    fd = fopen("ids.dat", "r");
+    fd = fopen(get_nombre_fichero(ind), "r");
+    int i, tam, j, tam2;
+    vdin_str frases, palabras;
+    vdin_str frases_stem, palabras_stem;
+    char *buff, *frase, *palabra;
 
+    fseek(fd, 0, SEEK_END);
+    tam = ftell(fd);
+    fseek(fd, 0, SEEK_SET);
+    fread(buff, 1, tam, fd);
     fclose(fd);
+
+    frases = split_text(buff, ".");
+    palabras = split_text(c, " ");
+
+    frases_stem = ai_buscador_stemmer(frases);
+    tam = vdin_str_tama(frases);
+    palabras_stem = ai_buscador_stemmer(palabras);
+    tam2 = vdin_str_tama(palabras_stem);
+
+    for(i = 0; i < tam; i++){
+
+        frase = vdin_str_obtiene(frases_stem, i);
+
+        for(j = 0; j < tam2; j++){
+
+            palabra = vdin_str_obtiene(palabras_stem, j);
+
+            if(strstr(frase, palabra)){
+                return vdin_str_obtiene(palabras, j);;
+            }
+
+        }
+
+    }
 
 }
 
@@ -418,9 +456,9 @@ void write_results(int *docs, float *s, int tam, char *c){
 
     for(i = 0; i < tam; i++){
 
-        file_name = get_nombre_fichero(i);
-        titulo = get_titulo(i);
-        frase = get_frase(i, c);
+        file_name = get_nombre_fichero(docs[i]);
+        titulo = get_titulo(docs[i]);
+        frase = get_frase(docs[i], c);
 
         fprintf(fd, "%d- %s:%f:%s:%s\n",i+1 ,file_name, s[i], titulo, frase);
     }
@@ -470,11 +508,12 @@ void ai_buscador_escribeResultado(float *s, int relevantes, char *c){
     if(tam > relevantes){
         s2 = realloc(s2, relevantes * sizeof(float));
         docs = realloc(docs, relevantes * sizeof(int));
+        tam = relevantes;
 
     }
 
     // Escribe resultados
-    write_results(docs, s, tam, c);
+    write_results(docs, s2, tam, c);
 
 }
 
