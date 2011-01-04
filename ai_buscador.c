@@ -295,7 +295,7 @@ char* get_tag_text(char* buff, char* _tag){
     char *ptr_inic, *ptr_fin;
     char *txt = 0;
     char *open_tag, *close_tag;
-
+    
     open_tag = malloc(strlen(_tag) + 2 + 1); // < > \0
     close_tag = malloc(strlen(_tag) + 3 + 1); // </ > \0
 
@@ -344,8 +344,10 @@ char* get_nombre_fichero(int index){
     fd = fopen("ids.dat", "r");
     int encontrado = 0;
     char *file_name;
+    char *file_path;
     int id_f;
 
+    file_path = malloc(64);
     file_name = malloc(64);
 
     do{
@@ -358,7 +360,16 @@ char* get_nombre_fichero(int index){
 
     fclose(fd);
 
-    return file_name;
+    file_name = realloc(file_name, strlen(file_name));
+
+    strcpy(file_path, "../coleccion/");
+    strcat(file_path, file_name);
+    strcat(file_path, ".sgml");
+
+    file_path = realloc(file_path, strlen(file_path));
+    free(file_name);
+
+    return file_path;
 
 }
 
