@@ -21,15 +21,19 @@ vdin_str ai_buscador_normaliza(vdin_str palabras){
     int i;
     int num_words;
     char* norm_word;
+    char *buff;
     vdin_str norm_words;
 
 	num_words = vdin_str_tama(palabras);
 	norm_words = vdin_str_crea();
 
 	for(i = 0; i < num_words; i++){
-		norm_word = normaliza_str(vdin_str_obtiene(palabras, i));
-		if(strlen(norm_word))
-			vdin_str_aumd(norm_words, norm_word);
+            buff = vdin_str_obtiene(palabras, i);
+            norm_word = normaliza_str(buff);
+            free(buff);
+            
+            if(strlen(norm_word))
+                vdin_str_aumd(norm_words, norm_word);
 
 	}
 
@@ -101,7 +105,7 @@ vdin_str ai_buscador_stopper(char* stoplist_path, vdin_str palabras){
  */
 vdin_str ai_buscador_stemmer(vdin_str palabras){
 
-	return stemstring(palabras);
+    return stemstring(palabras);
 
 }
 
@@ -149,11 +153,17 @@ avl_words gen_eedd(const char* file_path){
     // Parsear buffer
     lineas = split_text(buff, "\r\n");
 
+    free(buff);
+
     tam = vdin_str_tama(lineas);
 
     for(i = 0; i < tam; i++){
 
-        linea = split_text(vdin_str_obtiene(lineas, i), " ");
+        buff = vdin_str_obtiene(lineas, i);
+
+        linea = split_text(buff, " ");
+
+        free(buff);
 
         tam2 = vdin_str_tama(linea);
         palabra = vdin_str_obtiene(linea, 0);
@@ -200,6 +210,8 @@ int get_num_docs(){
     fclose(fd);
     
     indices = split_text(buff, "\r\n");
+
+    free(buff);
 
     num_docs = vdin_str_tama(indices);
 
@@ -424,7 +436,10 @@ char* get_frase(int ind, char* c){
     fclose(fd);
 
     frases = split_text(buff, ".");
+    free(buff);
+
     palabras = split_text(c, " ");
+    free(c);
 
     frases_stem = ai_buscador_stemmer(frases);
     tam = vdin_str_tama(frases);
