@@ -47,7 +47,7 @@ vdin_str ai_buscador_normaliza(vdin_str palabras){
  * @param text Cadena de caracteres de donde eliminar las las palabres vacías
  * @return Cadena de caracteres sin las palabras vacias
  */
-vdin_str ai_buscador_stopper(char* stoplist_path, vdin_str palabras){
+vdin_str ai_buscador_stopper(vdin_str palabras){
 
     static vdin_str stopwords = 0;
     vdin_str stopped;
@@ -61,15 +61,7 @@ vdin_str ai_buscador_stopper(char* stoplist_path, vdin_str palabras){
 
     if(!stopwords){
 
-        stw_file = fopen(stoplist_path, "r");
-
-        fseek(stw_file, 0, SEEK_END);
-        tam = ftell(stw_file);
-        fseek(stw_file, 0, SEEK_SET);
-
-        stw_buff = malloc(tam + 1); // \0
-        fread(stw_buff, 1, tam, stw_file);
-        stw_buff[tam - 1] = 0;
+        stw_buff = vuelca_fich("englishST.txt");
 
         stopwords = split_text(stw_buff, " ,;.:\r\n\t");
 
@@ -128,8 +120,7 @@ int compar_word(const word *a, const word *b){
  */
 avl_words gen_eedd(const char* file_path){
 
-    FILE* fd;
-    int file_size, tam, tam2, i, j;
+    int tam, tam2, i, j;
     int file_id;
     float peso;
     char *buff, *palabra;
@@ -139,16 +130,7 @@ avl_words gen_eedd(const char* file_path){
     word *new_w;
 
     // Cargar fichero
-    fd = fopen(file_path, "r");
-
-    fseek(fd, 0, SEEK_END);
-    file_size = ftell(fd);
-    fseek(fd, 0, SEEK_SET);
-    buff = malloc(file_size);
-    words = avl_words_crea();
-    fread(buff, file_size, 1, fd);
-
-    fclose(fd);
+    buff = vuelca_fich(file_path);
 
     // Parsear buffer
     lineas = split_text(buff, "\r\n");
@@ -196,18 +178,11 @@ avl_words gen_eedd(const char* file_path){
  */
 int get_num_docs(){
 
-    int file_size, num_docs;
+    int num_docs;
     char *buff;
-    FILE *fd;
     vdin_str indices;
 
-    fd = fopen("ids.dat", "r");
-    fseek(fd, 0, SEEK_END);
-    file_size = ftell(fd);
-    fseek(fd, 0, SEEK_SET);
-    buff = malloc(file_size);
-    fread(buff, file_size, 1, fd);
-    fclose(fd);
+    buff = vuelca_fich("ids.dat");
     
     indices = split_text(buff, "\r\n");
 
@@ -232,7 +207,7 @@ int compar_idf_files(const idf_file **a, const idf_file **b){
  * @param consulta Consulta
  * @return Vector de similitudes
  */
-float* ai_buscador_similitud(vdin_str consulta){
+float* ai_buscador_similitud(vdin_str consulta, char* fich_ind){
 
     int i, tam, j, tam2;
     int file_size;
@@ -245,7 +220,7 @@ float* ai_buscador_similitud(vdin_str consulta){
     FILE* fd;
 
     // Carga el índice de palabras
-    words = gen_eedd("index.ind");
+    words = gen_eedd(fich_ind);
 
     // Calcula similitudes
 
@@ -395,25 +370,13 @@ char* get_nombre_fichero(int index){
  */
 char* get_titulo(int index){
 
-    FILE *fd;
-    char *file_name, *titulo, *buffer;
-    int tam;
+    char *file_name, *titulo, *buff;
 
     file_name = get_nombre_fichero(index);
 
-    fd = fopen(file_name, "r");
-    fseek(fd, 0, SEEK_END);
-    tam = ftell(fd);
-    fseek(fd, 0, SEEK_SET);
+    buff = vuelca_fich(file_name);
 
-    buffer = malloc(tam);
-
-    //busca titulo
-    fread(buffer, 1, tam, fd);
-    
-    fclose(fd);
-
-    titulo = get_tag_text(buffer, "TITLE");
+    titulo = get_tag_text(buff, "TITLE");
 
     return titulo;
 
@@ -427,19 +390,12 @@ char* get_titulo(int index){
  */
 char* get_frase(int ind, char* c){
 
-    FILE *fd;
-    fd = fopen(get_nombre_fichero(ind), "r");
     int i, tam, j, tam2;
     vdin_str frases, palabras;
     vdin_str frases_stem, palabras_stem;
     char *buff, *frase, *palabra;
 
-    fseek(fd, 0, SEEK_END);
-    tam = ftell(fd);
-    buff = malloc(tam);
-    fseek(fd, 0, SEEK_SET);
-    fread(buff, 1, tam, fd);
-    fclose(fd);
+    buff = vuelca_fich(get_nombre_fichero(ind));
 
     frases = split_text(buff, ".");
     free(buff);
@@ -549,3 +505,39 @@ void ai_buscador_escribeResultado(float *s, int relevantes, char *c){
 
 }
 
+vdin_str obtiene_consultas(char *fich_cons){
+
+    char *buff;
+    vdin_str cons;
+
+    buff = vuelca_fich(fich_cons);
+
+    cons = split_text(buff, "\n");
+
+    free(buff);
+
+    return cons;
+
+}
+
+char* vuelca_fich(const char *ruta){
+
+    FILE *fd;
+    int tam;
+    char *buff;
+
+    fd = fopen(ruta, "r");
+    
+    fseek(fd, 0, SEEK_END);
+    tam = ftell(fd);
+    fseek(fd, 0, SEEK_SET);
+
+    buff = malloc(tam + 1); // \0
+    fread(buff, 1, tam, fd);
+    buff[tam - 1] = 0;
+
+    fclose(fd);
+
+    return buff;
+
+}
