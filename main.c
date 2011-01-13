@@ -18,20 +18,25 @@ int main(int argc,char** argv)
     vdin_str consulta, consultas;
     vdin_str vs_free;
 
+/*
     if(argc != 4){
         printf("Uso:\n");
         printf("%s <fich_indice> <fich_consultas> <num_relevantes>\n", argv[0]);
         exit(1);
     }
+*/
 
     //fichero indice
-    fich_ind = argv[1];
+    //fich_ind = argv[1];
+    fich_ind = strdup("index.ind");
 
     //fichero consulta
-    fich_cons = argv[2];
+    //fich_cons = argv[2];
+    fich_cons = strdup("consultas.txt");
 
     //num relevantes
-    relevantes = atoi(argv[3]);
+    //relevantes = atoi(argv[3]);
+    relevantes = 5;
 
     //Obtener las consultas
     consultas = obtiene_consultas(fich_cons);
@@ -77,8 +82,8 @@ int main(int argc,char** argv)
 
     }
 
-    vdin_str_destruye(consultas);
-    vdin_str_destruye(consulta);
+    vdin_str_destruye(&consultas);
+    vdin_str_destruye(&consulta);
 
     return 0;
 

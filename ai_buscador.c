@@ -51,7 +51,6 @@ vdin_str ai_buscador_stopper(vdin_str palabras){
 
     static vdin_str stopwords = 0;
     vdin_str stopped;
-    FILE *stw_file;
     int i, j;
     int tam;
     char *stw_buff;
@@ -66,7 +65,6 @@ vdin_str ai_buscador_stopper(vdin_str palabras){
         stopwords = split_text(stw_buff, " ,;.:\r\n\t");
 
         free(stw_buff);
-        fclose(stw_file);
 
     }
 
@@ -128,6 +126,8 @@ avl_words gen_eedd(const char* file_path){
     avl_words words;
     idf_file *new_ff;
     word *new_w;
+
+    words = avl_words_crea();
 
     // Cargar fichero
     buff = vuelca_fich(file_path);
@@ -210,14 +210,11 @@ int compar_idf_files(const idf_file **a, const idf_file **b){
 float* ai_buscador_similitud(vdin_str consulta, char* fich_ind){
 
     int i, tam, j, tam2;
-    int file_size;
     avl_words words;
     word palabra;
-    vdin_str indices;
     idf_file *idff, *idff_aux;
     float *s; // Similitudes
     float w, idfc, tfc;
-    FILE* fd;
 
     // Carga el índice de palabras
     words = gen_eedd(fich_ind);
@@ -227,8 +224,7 @@ float* ai_buscador_similitud(vdin_str consulta, char* fich_ind){
     tam = get_num_docs();
     s = calloc(tam, sizeof(float));
 
-    //free(buff);
-    
+    //free(buff);    
 
     tam2 = vdin_str_tama(consulta);
     idff = malloc(sizeof(idf_file));
@@ -275,7 +271,7 @@ float* ai_buscador_similitud(vdin_str consulta, char* fich_ind){
  * @brief Obtiene el texto encerrado dentro del tag
  * @param buff Texto de donde obtener los datos
  * @param tag Tag dinde se encuentra el texto
- * @return Texto que se encuentra dentro del tag o  NULL si no pudo obtenerse
+ * @return Texto que se encuentra dentro del tag o NULL si no pudo obtenerse
  */
 char* get_tag_text(char* buff, char* _tag){
 
@@ -393,18 +389,20 @@ char* get_frase(int ind, char* c){
     int i, tam, j, tam2;
     vdin_str frases, palabras;
     vdin_str frases_stem, palabras_stem;
-    char *buff, *frase, *palabra;
+    char *buff, *file_buff;
+    char *frase, *palabra;
 
-    buff = vuelca_fich(get_nombre_fichero(ind));
+    file_buff = vuelca_fich(get_nombre_fichero(ind));
 
+    buff = get_tag_text(file_buff, "TEXT");
+    free(file_buff);
     frases = split_text(buff, ".");
     free(buff);
 
     palabras = split_text(c, " ");
-    //free(c);
 
     frases_stem = ai_buscador_stemmer(frases);
-    tam = vdin_str_tama(frases);
+    tam = vdin_str_tama(frases_stem);
     palabras_stem = ai_buscador_stemmer(palabras);
     tam2 = vdin_str_tama(palabras_stem);
 
