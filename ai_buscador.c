@@ -436,6 +436,7 @@ char* get_frase(int ind, char* c){
 
     fseek(fd, 0, SEEK_END);
     tam = ftell(fd);
+    buff = malloc(tam);
     fseek(fd, 0, SEEK_SET);
     fread(buff, 1, tam, fd);
     fclose(fd);
@@ -444,7 +445,7 @@ char* get_frase(int ind, char* c){
     free(buff);
 
     palabras = split_text(c, " ");
-    free(c);
+    //free(c);
 
     frases_stem = ai_buscador_stemmer(frases);
     tam = vdin_str_tama(frases);
