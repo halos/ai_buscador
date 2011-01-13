@@ -305,8 +305,10 @@ float* ai_buscador_similitud(vdin_str consulta){
 char* get_tag_text(char* buff, char* _tag){
 
     char *ptr_inic, *ptr_fin;
-    char *txt = 0;
+    char *txt;
     char *open_tag, *close_tag;
+
+    txt = 0;
     
     open_tag = malloc(strlen(_tag) + 2 + 1); // < > \0
     close_tag = malloc(strlen(_tag) + 3 + 1); // </ > \0
@@ -378,7 +380,8 @@ char* get_nombre_fichero(int index){
     strcat(file_path, file_name);
     strcat(file_path, ".sgml");
 
-    file_path = realloc(file_path, strlen(file_path));
+    file_path = realloc(file_path, strlen(file_path) + 1);
+    file_path[strlen(file_path)] = 0;
     free(file_name);
 
     return file_path;
@@ -403,11 +406,13 @@ char* get_titulo(int index){
     tam = ftell(fd);
     fseek(fd, 0, SEEK_SET);
 
+    buffer = malloc(tam);
+
     //busca titulo
     fread(buffer, 1, tam, fd);
     
     fclose(fd);
-    
+
     titulo = get_tag_text(buffer, "TITLE");
 
     return titulo;
