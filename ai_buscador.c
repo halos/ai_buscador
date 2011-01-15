@@ -397,7 +397,7 @@ char* get_frase(int ind, char* c){
 
     buff = get_tag_text(file_buff, "TEXT");
     free(file_buff);
-    frases = split_text(buff, ".");
+    frases = split_text(buff, ".\n");
     free(buff);
 
     pals_cons = split_text(c, " ");
@@ -407,7 +407,7 @@ char* get_frase(int ind, char* c){
     pals_stop = ai_buscador_stopper(pals_cons);
     pals_stem = ai_buscador_stemmer(pals_stop);
     pals_pars = ai_buscador_normaliza(pals_stem);
-    tam2 = vdin_str_tama(pals_pars);
+    tam3 = vdin_str_tama(pals_pars);
 
     for(i = 0; i < tam; i++){ // frases
 
@@ -418,6 +418,8 @@ char* get_frase(int ind, char* c){
         frase_stem = ai_buscador_stemmer(frase_stop);
         frase_pars = ai_buscador_normaliza(frase_stem);
 
+        tam2 = vdin_str_tama(frase_pars);
+
         for(j = 0; j < tam2; j++){ // palabras frase
 
             pal_frase = vdin_str_obtiene(frase_pars, j);
@@ -426,7 +428,7 @@ char* get_frase(int ind, char* c){
                 pal_cons = vdin_str_obtiene(pals_pars, k);
 
                 if(strstr(pal_frase, pal_cons)){
-                    return vdin_str_obtiene(pals_cons, k);;
+                    return vdin_str_obtiene(frases, i);;
                 }
             }
 
@@ -450,7 +452,7 @@ void write_results(int *docs, float *s, int tam, char *c){
     FILE *fd;
     fd = fopen("results.dat", "a");
 
-    fprintf(fd, "\"%s\"\n", c);
+    fprintf(fd, "\n\"%s\"\n", c);
 
     for(i = 0; i < tam; i++){
 
@@ -458,7 +460,7 @@ void write_results(int *docs, float *s, int tam, char *c){
         titulo = get_titulo(docs[i]);
         frase = get_frase(docs[i], c);
 
-        fprintf(fd, "%d- %s:%f:%s:%s\n",i+1 ,file_name, s[i], titulo, frase);
+        fprintf(fd, "\n%d- %s:%f:%s:%s\n",i+1 ,file_name, s[i], titulo, frase);
     }
 
     fprintf(fd, "\n");
