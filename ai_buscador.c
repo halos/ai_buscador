@@ -386,11 +386,12 @@ char* get_titulo(int index){
  */
 char* get_frase(int ind, char* c){
 
-    int i, tam, j, tam2;
-    vdin_str frases, palabras;
-    vdin_str frases_stem, palabras_stem;
+    int i, tam, j, tam2, k, tam3;
+    vdin_str frases, pals_cons, pals_frase;
+    vdin_str frase_stop, frase_stem,frase_pars;
+    vdin_str pals_pars, pals_stop, pals_stem;
     char *buff, *file_buff;
-    char *frase, *palabra;
+    char *frase, *pal_cons, *pal_frase;
 
     file_buff = vuelca_fich(get_nombre_fichero(ind));
 
@@ -399,23 +400,34 @@ char* get_frase(int ind, char* c){
     frases = split_text(buff, ".");
     free(buff);
 
-    palabras = split_text(c, " ");
+    pals_cons = split_text(c, " ");
 
-    frases_stem = ai_buscador_stemmer(frases);
-    tam = vdin_str_tama(frases_stem);
-    palabras_stem = ai_buscador_stemmer(palabras);
-    tam2 = vdin_str_tama(palabras_stem);
+    tam = vdin_str_tama(frases);
 
-    for(i = 0; i < tam; i++){
+    pals_stop = ai_buscador_stopper(pals_cons);
+    pals_stem = ai_buscador_stemmer(pals_stop);
+    pals_pars = ai_buscador_normaliza(pals_stem);
+    tam2 = vdin_str_tama(pals_pars);
 
-        frase = vdin_str_obtiene(frases_stem, i);
+    for(i = 0; i < tam; i++){ // frases
 
-        for(j = 0; j < tam2; j++){
+        frase = vdin_str_obtiene(frases, i);
+        pals_frase = split_text(frase, " ,;\n\r");
 
-            palabra = vdin_str_obtiene(palabras_stem, j);
+        frase_stop = ai_buscador_stopper(pals_frase);
+        frase_stem = ai_buscador_stemmer(frase_stop);
+        frase_pars = ai_buscador_normaliza(frase_stem);
 
-            if(strstr(frase, palabra)){
-                return vdin_str_obtiene(palabras, j);;
+        for(j = 0; j < tam2; j++){ // palabras frase
+
+            pal_frase = vdin_str_obtiene(frase_pars, j);
+
+            for(k = 0; k < tam3; k++){ // palabras consulta
+                pal_cons = vdin_str_obtiene(pals_pars, k);
+
+                if(strstr(pal_frase, pal_cons)){
+                    return vdin_str_obtiene(pals_cons, k);;
+                }
             }
 
         }
