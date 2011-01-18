@@ -12,4 +12,4 @@ int get_num_docs();
 
 char* vuelca_fich(const char *ruta);
 
-void ai_buscador_escribeResultado(float *s, int relevantes, char *c);
+void ai_buscador_escribeResultado(float **s, int num_relevantes, char *c);
