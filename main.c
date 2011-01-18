@@ -27,16 +27,16 @@ int main(int argc,char** argv)
 
 
     //fichero indice
-    fich_ind = argv[1];
-    //fich_ind = strdup("index.ind");
+    //fich_ind = argv[1];
+    fich_ind = strdup("index.ind");
 
     //fichero consulta
-    fich_cons = argv[2];
-    //fich_cons = strdup("consultas.txt");
+    //fich_cons = argv[2];
+    fich_cons = strdup("consultas.txt");
 
     //num relevantes
-    num_relevantes = atoi(argv[3]);
-    //num_relevantes = 5;
+    //num_relevantes = atoi(argv[3]);
+    num_relevantes = 5;
 
     //Obtener las consultas
     consultas = obtiene_consultas(fich_cons);
