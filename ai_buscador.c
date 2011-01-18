@@ -439,7 +439,8 @@ char* get_frase(int ind, char* c){
 }
 
 /**
- * @brief Vuelca los resultados en el fichero
+ * @brief Obtiene el nombre, título, frase, similitud de los documentos
+ * indicados y los escribe en el fichero
  * @param docs Vector con los documentos
  * @param s Vector de similitudes
  * @param tam número de resultados
@@ -470,28 +471,29 @@ void write_results(int *docs, float *s, int tam, char *c){
 }
 
 /**
- * @brief Parsea y escribe los resultados en el fichero
+ * @brief Obtiene los documentos más relevantes de la consulta
  * @param s Vector de similitudes
- * @param relevantes Cantidad de elementos relevantes
+ * @param docs Puntero donde se almacenará la lista de documentos
+ * @param num_relevantes Documentos relevantes
+ * @return Número de elementos del vector
  */
-void ai_buscador_escribeResultado(float *s, int relevantes, char *c){
+int obtiene_relevantes(float **s, int **docs, int num_relevantes){
 
     int i, tam, j;
-    int *docs;
     float *s2; // vector de similitudes sin los ceros
 
     // Eliminación de elementos con similitud 0
     tam = get_num_docs();
-    docs = calloc(tam, sizeof(int));
+    *docs = calloc(tam, sizeof(int));
     s2 = calloc(tam, sizeof(float));
 
     j = 0;
 
     for(i = 0; i < tam; i++)
-        if(s[i] > 0){
+        if((*s)[i] > 0){
 
-            s2[j] = s[i];
-            docs[j] = i;
+            s2[j] = (*s)[i];
+            (*docs)[j] = i;
             j++;
 
         }
@@ -499,24 +501,47 @@ void ai_buscador_escribeResultado(float *s, int relevantes, char *c){
     tam = j;
 
     s2 = realloc(s2, tam * sizeof(float));
-    docs = realloc(docs, tam * sizeof(int));
+    *docs = realloc(*docs, tam * sizeof(int));
 
     // ordena
-    quicksort(s2, docs, 0, tam - 1);
+    quicksort(s2, *docs, 0, tam - 1);
 
     //realloc si procede
-    if(tam > relevantes){
-        s2 = realloc(s2, relevantes * sizeof(float));
-        docs = realloc(docs, relevantes * sizeof(int));
-        tam = relevantes;
+    if(tam > num_relevantes){
+        s2 = realloc(s2, num_relevantes * sizeof(float));
+        *docs = realloc(*docs, num_relevantes * sizeof(int));
+        tam = num_relevantes;
 
     }
 
-    // Escribe resultados
-    write_results(docs, s2, tam, c);
+    *s = s2;
+
+    return tam;
 
 }
 
+/**
+ * @brief Parsea y escribe los resultados en el fichero
+ * @param s Vector de similitudes
+ * @param relevantes Cantidad de elementos relevantes
+ */
+void ai_buscador_escribeResultado(float **s, int num_relevantes, char *c){
+
+    int tam;
+    int *docs;
+
+    tam = obtiene_relevantes(s, &docs, num_relevantes);
+
+    // Escribe resultados
+    write_results(docs, *s, tam, c);
+
+}
+
+/**
+ * @brief Obtiene las consultas que se hacen al sistema
+ * @param fich_cons Ruta del fichero que contiene las consultas
+ * @return Vectos con las consultas
+ */
 vdin_str obtiene_consultas(char *fich_cons){
 
     char *buff;
@@ -532,6 +557,11 @@ vdin_str obtiene_consultas(char *fich_cons){
 
 }
 
+/**
+ * @brief Vuelca un fichero en un buffer
+ * @param ruta Ruta del fichero que se volcará
+ * @return buffer con el contenido del fichero
+ */
 char* vuelca_fich(const char *ruta){
 
     FILE *fd;

@@ -12,17 +12,19 @@ int main(int argc,char** argv)
     char *query;
     char *fich_ind;
     char *fich_cons;
-    int relevantes;
+    int num_relevantes;
     int i, n_qry;
     float *s;
     vdin_str consulta, consultas;
     vdin_str vs_free;
+
 
     if(argc != 4){
         printf("Uso:\n");
         printf("%s <fich_indice> <fich_consultas> <num_relevantes>\n", argv[0]);
         exit(1);
     }
+
 
     //fichero indice
     fich_ind = argv[1];
@@ -33,15 +35,15 @@ int main(int argc,char** argv)
     //fich_cons = strdup("consultas.txt");
 
     //num relevantes
-    relevantes = atoi(argv[3]);
-    //relevantes = 5;
+    num_relevantes = atoi(argv[3]);
+    //num_relevantes = 5;
 
     //Obtener las consultas
     consultas = obtiene_consultas(fich_cons);
 
     n_qry = vdin_str_tama(consultas);
 
-    for(i = 0; i < n_qry; i++){
+    for(i = 0; i < n_qry; i++){ // consultas
 
         // TODO: Obtener línea de consulta
         query = vdin_str_obtiene(consultas, i);
@@ -65,18 +67,7 @@ int main(int argc,char** argv)
         // busca similitud
         s = ai_buscador_similitud(consulta, fich_ind);
 
-/*
-        int i, tam;
-
-        tam = get_num_docs();
-
-        printf("Resultados:\n");
-
-        for(i = 0; i < tam; i++)
-            printf("%d --> %f\n",i, s[i]);
-*/
-
-        ai_buscador_escribeResultado(s, relevantes, query);
+        ai_buscador_escribeResultado(&s, num_relevantes, query);
 
     }
 
