@@ -196,6 +196,12 @@ int get_num_docs(){
 
 }
 
+/**
+ * @brief Función para comparar dos idf_file
+ * @param a
+ * @param b
+ * @return 0 si son iguales, !0 en caso contrario
+ */
 int compar_idf_files(const idf_file **a, const idf_file **b){
 
     return (*a)->file - (*b)->file;
@@ -203,7 +209,7 @@ int compar_idf_files(const idf_file **a, const idf_file **b){
 }
 
 /**
- * @brief Camcula el vector de similitudes
+ * @brief Calcula el vector de similitudes
  * @param consulta Consulta
  * @return Vector de similitudes
  */
